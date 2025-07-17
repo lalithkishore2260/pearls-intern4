@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RideEasy - Premium Bike Rentals</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                filter: drop-shadow(0 0 5px rgba(102, 126, 234, 0.3));
+            }
+
+            to {
+                filter: drop-shadow(0 0 20px rgba(102, 126, 234, 0.6));
+            }
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .category-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        .category-card:hover::before {
+            left: 100%;
+        }
+
+        .category-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        .category-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .category-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .category-desc {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .bikes-container {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .bikes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .bike-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bike-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        .bike-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .bike-name {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .bike-price {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #e74c3c;
+            background: linear-gradient(45deg, #e74c3c, #f39c12);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .bike-specs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .spec-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .spec-label {
+            font-weight: 600;
+            color: #555;
+        }
+
+        .spec-value {
+            color: #777;
+        }
+
+        .rent-section {
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+
+        .rent-input {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .rent-input label {
+            font-weight: 600;
+            color: #333;
+            min-width: 120px;
+        }
+
+        .rent-input input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .rent-input input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.2);
+        }
+
+        .calculate-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .total-display {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            text-align: center;
+            font-weight: bold;
+            display: none;
+        }
+
+        .documents-section {
+            background: #fff3cd;
+            border: 2px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .documents-title {
+            font-weight: bold;
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .documents-list {
+            list-style: none;
+            color: #856404;
+        }
+
+        .documents-list li {
+            padding: 3px 0;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .documents-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .back-btn {
+            background: linear-gradient(45deg, #6c757d, #495057);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 20px auto;
+            display: block;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(108, 117, 125, 0.3);
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(108, 117, 125, 0.4);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            margin-top: 30px;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .category-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .bikes-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .bike-specs {
+                grid-template-columns: 1fr;
+            }
+
+            .rent-input {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏍️ RideEasy</h1>
+            <p class="subtitle">Government of Tamil Nadu Authorized Rental Service</p>
+            <p style="color: #888; font-size: 0.9rem;">© 2024 All rights reserved</p>
+        </div>
+
+        <div id="categorySelection">
+            <div class="category-grid">
+                <div class="category-card" onclick="showBikes('budget')">
+                    <span class="category-icon">💰</span>
+                    <div class="category-title">Budget Variant</div>
+                    <div class="category-desc">Affordable bikes perfect for daily commuting</div>
+                </div>
+
+                <div class="category-card" onclick="showBikes('fuel')">
+                    <span class="category-icon">⛽</span>
+                    <div class="category-title">Fuel Efficient</div>
+                    <div class="category-desc">Low fuel consumption bikes for long rides</div>
+                </div>
+
+                <div class="category-card" onclick="showBikes('electric')">
+                    <span class="category-icon">🔋</span>
+                    <div class="category-title">E-Scooters</div>
+                    <div class="category-desc">Eco-friendly electric scooters</div>
+                </div>
+
+                <div class="category-card" onclick="showBikes('super')">
+                    <span class="category-icon">🏁</span>
+                    <div class="category-title">Super Bikes</div>
+                    <div class="category-desc">High-performance premium motorcycles</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="bikesContainer" class="bikes-container">
+            <button class="back-btn" onclick="showCategories()">← Back to Categories</button>
+            <div id="bikesGrid" class="bikes-grid"></div>
+        </div>
+
+        <div class="footer">
+            <p>Premium bike rental service with good condition vehicles</p>
+            <p>Safe rides, affordable prices, professional service</p>
+        </div>
+    </div>
+
+    <script>
+        const bikeData = {
+            budget: [{
+                    name: "Hero Splendor Plus",
+                    price: 400,
+                    specs: {
+                        "Engine": "97cc",
+                        "Mileage": "80.6 kmpl",
+                        "Power": "8.02ps @ 8000rpm",
+                        "Fuel": "9.8 liters",
+                        "Gears": "4 speed",
+                        "Weight": "112kg",
+                        "Torque": "8.05nm @ 6000rpm",
+                        "Driven": "32,080 km",
+                        "Tire": "80%",
+                        "Service": "2/3/24"
+                    }
+                },
+                {
+                    name: "Honda Shine",
+                    price: 380,
+                    specs: {
+                        "Engine": "123.94cc",
+                        "Mileage": "55 kmpl",
+                        "Power": "10.74ps @ 7500rpm",
+                        "Fuel": "10.5 liters",
+                        "Gears": "5 speed",
+                        "Weight": "114kg",
+                        "Torque": "11nm @ 6000rpm",
+                        "Driven": "30,100 km",
+                        "Tire": "100%",
+                        "Service": "2/3/24"
+                    }
+                },
+                {
+                    name: "TVS Raider",
+                    price: 470,
+                    specs: {
+                        "Engine": "124.8cc",
+                        "Mileage": "56.7 kmpl",
+                        "Power": "11.38ps @ 7500rpm",
+                        "Fuel": "10 liters",
+                        "Gears": "5 speed",
+                        "Weight": "123kg",
+                        "Torque": "11.2nm @ 6000rpm",
+                        "Driven": "4,000 km",
+                        "Tire": "90%",
+                        "Service": "2/4/24"
+                    }
+                },
+                {
+                    name: "TVS Jupiter",
+                    price: 250,
+                    specs: {
+                        "Engine": "124cc",
+                        "Mileage": "52.91 kmpl",
+                        "Power": "8.15ps @ 6500rpm",
+                        "Fuel": "5.1 liters",
+                        "Gears": "CVT",
+                        "Weight": "108kg",
+                        "Torque": "8.05nm @ 6000rpm",
+                        "Driven": "35,260 km",
+                        "Tire": "80%",
+                        "Service": "2/2/24"
+                    }
+                },
+                {
+                    name: "Honda Activa 125",
+                    price: 280,
+                    specs: {
+                        "Engine": "124cc",
+                        "Mileage": "46 kmpl",
+                        "Power": "8.30ps @ 6250rpm",
+                        "Fuel": "5.3 liters",
+                        "Gears": "CVT",
+                        "Weight": "109kg",
+                        "Torque": "10.4nm @ 5000rpm",
+                        "Driven": "32,080 km",
+                        "Tire": "80%",
+                        "Service": "15/3/24"
+                    }
+                }
+            ],
+            fuel: [{
+                    name: "TVS Sport",
+                    price: 430,
+                    specs: {
+                        "Engine": "109.7cc",
+                        "Mileage": "80.0 kmpl",
+                        "Power": "8.19ps @ 7350rpm",
+                        "Fuel": "10.0 liters",
+                        "Gears": "4 speed",
+                        "Weight": "112kg",
+                        "Driven": "30,000 km",
+                        "Tire": "85%",
+                        "Service": "11/2/24"
+                    }
+                },
+                {
+                    name: "Bajaj Platina 100",
+                    price: 400,
+                    specs: {
+                        "Engine": "102.94cc",
+                        "Mileage": "72 kmpl",
+                        "Power": "8.03ps @ 5500rpm",
+                        "Fuel": "11.5 liters",
+                        "Gears": "4 speed",
+                        "Weight": "117kg",
+                        "Driven": "40,000 km",
+                        "Tire": "90%",
+                        "Service": "10/4/24"
+                    }
+                },
+                {
+                    name: "Bajaj CT100",
+                    price: 442,
+                    specs: {
+                        "Engine": "99.27cc",
+                        "Mileage": "89.7 kmpl",
+                        "Power": "8.34ps @ 7500rpm",
+                        "Fuel": "11 liters",
+                        "Gears": "4 speed",
+                        "Weight": "127kg",
+                        "Driven": "4,200 km",
+                        "Tire": "96%",
+                        "Service": "26/4/24"
+                    }
+                },
+                {
+                    name: "Hero HF Deluxe",
+                    price: 370,
+                    specs: {
+                        "Engine": "97.22cc",
+                        "Mileage": "65.91 kmpl",
+                        "Power": "8.02ps @ 8000rpm",
+                        "Fuel": "9.1 liters",
+                        "Gears": "4 speed",
+                        "Weight": "110kg",
+                        "Driven": "25,265 km",
+                        "Tire": "87%",
+                        "Service": "3/4/24"
+                    }
+                },
+                {
+                    name: "Honda SP125",
+                    price: 460,
+                    specs: {
+                        "Engine": "124.0cc",
+                        "Mileage": "65 kmpl",
+                        "Power": "10.87ps @ 7500rpm",
+                        "Fuel": "11.5 liters",
+                        "Gears": "5 speed",
+                        "Weight": "116kg",
+                        "Driven": "31,180 km",
+                        "Tire": "89%",
+                        "Service": "27/2/24"
+                    }
+                }
+            ],
+            electric: [{
+                    name: "TVS iQube Electric",
+                    price: 750,
+                    specs: {
+                        "Range": "100 km",
+                        "Top Speed": "78 kmph",
+                        "Charging": "0-80% in 4 hours",
+                        "Seat Height": "770mm",
+                        "Weight": "117kg",
+                        "Battery": "Lithium-ion",
+                        "Features": "Digital display",
+                        "Service": "Latest"
+                    }
+                },
+                {
+                    name: "Revolt RV400",
+                    price: 900,
+                    specs: {
+                        "Range": "150 km",
+                        "Top Speed": "85 kmph",
+                        "Charging": "0-80% in 3 hours",
+                        "Seat Height": "814mm",
+                        "Weight": "115kg",
+                        "Battery": "Lithium-ion",
+                        "Features": "Smart connectivity",
+                        "Service": "Latest"
+                    }
+                },
+                {
+                    name: "Ola S1 Pro",
+                    price: 850,
+                    specs: {
+                        "Range": "181 km",
+                        "Top Speed": "116 kmph",
+                        "Charging": "0-100% in 6 hours",
+                        "Seat Height": "770mm",
+                        "Weight": "114kg",
+                        "Battery": "Lithium-ion",
+                        "Features": "Advanced dashboard",
+                        "Service": "Latest"
+                    }
+                }
+            ],
+            super: [{
+                    name: "Ducati Panigale V4R",
+                    price: 40000,
+                    specs: {
+                        "Engine": "998cc",
+                        "Mileage": "13 kmpl",
+                        "Power": "220ps @ 16500rpm",
+                        "Fuel": "16 liters",
+                        "Gears": "6 speed",
+                        "Weight": "193kg",
+                        "Torque": "112nm @ 11500rpm",
+                        "Driven": "18,080 km",
+                        "Tire": "90%",
+                        "Service": "1/5/24"
+                    }
+                },
+                {
+                    name: "BMW S1000 RR",
+                    price: 30000,
+                    specs: {
+                        "Engine": "999cc",
+                        "Mileage": "12.7 kmpl",
+                        "Power": "205hp @ 13000rpm",
+                        "Fuel": "16.5 liters",
+                        "Gears": "6 speed quickshifter",
+                        "Weight": "197kg",
+                        "Torque": "113nm @ 11000rpm",
+                        "Driven": "2,000 km",
+                        "Tire": "90%",
+                        "Service": "1/5/24"
+                    }
+                },
+                {
+                    name: "Kawasaki Ninja H2R",
+                    price: 35000,
+                    specs: {
+                        "Engine": "998cc",
+                        "Mileage": "7.5 kmpl",
+                        "Power": "300hp @ 16500rpm",
+                        "Fuel": "17 liters",
+                        "Gears": "6 speed",
+                        "Weight": "216kg",
+                        "Torque": "112nm @ 11500rpm",
+                        "Driven": "19,080 km",
+                        "Tire": "90%",
+                        "Service": "1/5/24"
+                    }
+                },
+                {
+                    name: "Aprilia RSV4 1100",
+                    price: 32000,
+                    specs: {
+                        "Engine": "1078cc",
+                        "Mileage": "13 kmpl",
+                        "Power": "220ps @ 16500rpm",
+                        "Fuel": "18.5 liters",
+                        "Gears": "6 speed",
+                        "Weight": "193kg",
+                        "Torque": "115nm @ 11500rpm",
+                        "Driven": "18,080 km",
+                        "Tire": "90%",
+                        "Service": "1/5/24"
+                    }
+                },
+                {
+                    name: "Yamaha YZF-R1M",
+                    price: 40000,
+                    specs: {
+                        "Engine": "998cc",
+                        "Mileage": "13 kmpl",
+                        "Power": "220ps @ 16500rpm",
+                        "Fuel": "17 liters",
+                        "Gears": "6 speed",
+                        "Weight": "199kg",
+                        "Torque": "112nm @ 11500rpm",
+                        "Driven": "18,080 km",
+                        "Tire": "90%",
+                        "Service": "1/5/24"
+                    }
+                }
+            ]
+        };
+
+        function showBikes(category) {
+            document.getElementById('categorySelection').style.display = 'none';
+            document.getElementById('bikesContainer').style.display = 'block';
+
+            const bikesGrid = document.getElementById('bikesGrid');
+            bikesGrid.innerHTML = '';
+
+            bikeData[category].forEach((bike, index) => {
+                const bikeCard = createBikeCard(bike, index);
+                bikesGrid.appendChild(bikeCard);
+            });
+        }
+
+        function showCategories() {
+            document.getElementById('categorySelection').style.display = 'block';
+            document.getElementById('bikesContainer').style.display = 'none';
+        }
+
+        function createBikeCard(bike, index) {
+            const card = document.createElement('div');
+            card.className = 'bike-card';
+
+            let specsHTML = '';
+            Object.entries(bike.specs).forEach(([key, value]) => {
+                specsHTML += `
+                    <div class="spec-item">
+                        <span class="spec-label">${key}:</span>
+                        <span class="spec-value">${value}</span>
+                    </div>
+                `;
+            });
+
+            card.innerHTML = `
+                <div class="bike-header">
+                    <div class="bike-name">${bike.name}</div>
+                    <div class="bike-price">₹${bike.price}/day</div>
+                </div>
+                
+                <div class="bike-specs">
+                    ${specsHTML}
+                </div>
+                
+                <div class="rent-section">
+                    <div class="rent-input">
+                        <label>Rental Days:</label>
+                        <input type="number" id="days-${index}" min="1" value="1" onchange="calculateTotal(${index}, ${bike.price})">
+                        <button class="calculate-btn" onclick="calculateTotal(${index}, ${bike.price})">Calculate</button>
+                    </div>
+                    
+                    <div id="total-${index}" class="total-display">
+                        <div>Total Amount: ₹${bike.price}</div>
+                        <div>Initial Payment (5%): ₹${Math.round(bike.price * 0.05)}</div>
+                    </div>
+                    
+                    <div class="documents-section">
+                        <div class="documents-title">Required Documents:</div>
+                        <ul class="documents-list">
+                            <li>Driving License (Xerox)</li>
+                            <li>Aadhar Card (Xerox)</li>
+                            <li>Smart Card (Xerox)</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+
+            return card;
+        }
+
+        function calculateTotal(index, dailyPrice) {
+            const daysInput = document.getElementById(`days-${index}`);
+            const totalDisplay = document.getElementById(`total-${index}`);
+            const days = parseInt(daysInput.value) || 1;
+
+            const totalAmount = days * dailyPrice;
+            const initialPayment = Math.round(totalAmount * 0.05); // 5% instead of 20% as in original
+
+            totalDisplay.innerHTML = `
+                <div style="font-size: 1.2rem; margin-bottom: 10px;">
+                    <strong>Total Amount: ₹${totalAmount.toLocaleString()}</strong>
+                </div>
+                <div>Initial Payment (5%): ₹${initialPayment.toLocaleString()}</div>
+                <div style="margin-top: 10px; font-size: 0.9rem; opacity: 0.8;">
+                    For ${days} day${days > 1 ? 's' : ''}
+                </div>
+            `;
+            totalDisplay.style.display = 'block';
+        }
+
+        // Initialize with category selection
+        showCategories();
+    </script>
+</body>
+
+</html>
