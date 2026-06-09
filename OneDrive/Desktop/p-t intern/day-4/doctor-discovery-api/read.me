@@ -1,0 +1,47 @@
+## Features Implemented
+
+### Doctor Listing API
+
+* GET /doctor
+* Returns doctor details including:
+
+  * Doctor ID
+  * Full Name
+  * Specialization
+  * Experience
+  * Consultation Fee
+  * Availability Status
+
+### Search & Filters
+
+* Filter by specialization
+* Search by doctor name (partial match)
+* Availability filter
+
+### Pagination
+
+* Page and limit query parameters
+* Default pagination support
+
+### Doctor Profile API
+
+* GET /doctor/:id
+* Returns doctor details by ID
+
+### Edge Cases Handled
+
+* Invalid doctor ID
+* Invalid pagination values
+* Negative page/limit values
+* Empty search results
+* No doctors found
+* Missing query parameters
+
+### Database
+
+* Sequelize migration created
+* Seeder created with sample doctor data
+
+### Testing
+
+* APIs tested using Postman
